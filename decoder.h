@@ -12,4 +12,6 @@ int hexToDec(const std::string & code) ;
 
 std::string urlDecoder(const std::string & url);
 
+std::string urlDeleteParams(const std::string & url);
+
 #endif // DECODER_H

@@ -71,10 +71,10 @@ std::string Response::getResponse(){
        << "Date: " << date << "\r\n"
        << "Server: MEGASERVER\r\n" ;
     if(statusCode == "200 OK") {
-        ss << "Content-Type: " << contentType << "\r\n"
-           << "Content-Length: " << contentLength << "\r\n";
+        ss << "Content-Type: " << contentType << "\r\n";
     }
-    ss   << "Connection: " << connection << "\r\n\r\n";
+    ss  << "Content-Length: " << contentLength << "\r\n"
+        << "Connection: " << connection << "\r\n\r\n";
     std::string responseStr = ss.str();
     return responseStr;
 }

@@ -63,12 +63,14 @@ void HttpServer::work() {
 
 
         Request r(buffer);
+        r.print();
+        std::cout << "\n\n";
 
         Response resp;
         char* buf = NULL;
-        FileSystem fs;
+        FileSystem *fs = new FileSystem();
 
-        std::string url = urlDecoder(r.getRequestUrl());
+        std::string url =  urlDeleteParams( urlDecoder(r.getRequestUrl()) );
         std::string method = r.getRequestMethod();
 
         if( !(method == "GET" || method == "HEAD") ) {
@@ -78,16 +80,16 @@ void HttpServer::work() {
             resp.setDate();
         }
         else {
-
-            if( !fs.fileExist(url)) {
+            if( !fs->fileExist(url)) {
+                std::cout << "HEREEE";
                 resp.setStatusCode(404);
                 resp.setContentLength(0);
                 resp.setConnection("close");
                 resp.setDate();
             }
-            if(fs.isDirectory(url)) {
+            if(fs->isDirectory(url)) {
                 url += "/index.html";
-                if(!fs.fileExist(url)) {
+                if(!fs->fileExist(url)) {
                     resp.setStatusCode(403);
                     resp.setContentLength(0);
                     resp.setConnection("close");
@@ -95,12 +97,12 @@ void HttpServer::work() {
                 }
             }
 
-            if(fs.isFile( url )) {
-                size_t fileSize = fs.getLength( url ) ;
+            if(fs->isFile( url )) {
+                size_t fileSize = fs->getLength( url ) ;
                 resp.setDate();
                 resp.setStatusCode(200);
                 resp.setContentLength(fileSize);
-                resp.setContentType( fs.getContentType( url ) );
+                resp.setContentType( fs->getContentType( url ) );
                 resp.setConnection("close");
 
             }
@@ -110,11 +112,15 @@ void HttpServer::work() {
         std::cout << respStr;
         send(acceptedFileDescriptor, respStr.c_str(), respStr.length(), 0);
         if(method == "GET" && resp.getStatusCode() == "200 OK" ) {
-            size_t fileSize = fs.getLength( url ) ;
-            char *buf = fs.getFile( url );
-            send(acceptedFileDescriptor, buf, fileSize, 0);
+            size_t fileSize = fs->getLength( url ) ;
+            char *buf = fs->getFile( url );
+            if(buf != NULL)
+                send(acceptedFileDescriptor, buf, fileSize, 0);
         }
+        std::cout << "\n\n";
 
         delete[] buf;
+        delete fs;
+        buf = NULL;
     }
 }

@@ -45,3 +45,16 @@ std::string urlDecoder(const std::string & url) {
     }
     return resultUrl;
 }
+std::string urlDeleteParams(const std::string & url) {
+    std::string newUrl;
+    size_t dots = url.find("..");
+    if( dots != std::string::npos ){
+        newUrl = "kokokokokokokokokokokokokokodaaaaaaaa";
+        return newUrl;
+    }
+    size_t sign = url.find("?");
+    if( sign == std::string::npos )
+        return url;
+    newUrl = url.substr(0,sign);
+    return newUrl;
+}
