@@ -81,7 +81,6 @@ void HttpServer::work() {
         }
         else {
             if( !fs->fileExist(url)) {
-                std::cout << "HEREEE";
                 resp.setStatusCode(404);
                 resp.setContentLength(0);
                 resp.setConnection("close");
