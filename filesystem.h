@@ -1,6 +1,16 @@
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
 
+
+#include <fstream>
+#include <stdio.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <string>
+#include <cstring>
+#include <iostream>
+
+
 class FileSystem {
 public:
     FileSystem();
@@ -12,10 +22,10 @@ public:
     unsigned getLength(const std::string & path);
     std::string getContentType(const std::string & path);
     char * getFile(const std::string & path);
-
 private:
     char DIRECTORY_ROOT[512];
     struct stat st;
+
     int initSt(const char *path);
 };
 

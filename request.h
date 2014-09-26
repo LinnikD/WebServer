@@ -1,8 +1,8 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
-class Request
-{
+
+class Request {
 public:
     Request(char* requestBuffer);
     std::string getRequestMethod();

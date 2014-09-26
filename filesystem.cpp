@@ -1,11 +1,3 @@
-#include <fstream>
-#include <stdio.h>
-#include <errno.h>
-#include <sys/stat.h>
-#include <string>
-#include <cstring>
-#include <iostream>
-
 #include "filesystem.h"
 
 

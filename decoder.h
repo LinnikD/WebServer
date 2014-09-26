@@ -1,10 +1,12 @@
 #ifndef DECODER_H
 #define DECODER_H
 
+
 #include <iostream>
 #include <string>
 #include <cmath>
 #include <cstring>
+
 
 bool checkEntry(int num, int left, int right) ;
 

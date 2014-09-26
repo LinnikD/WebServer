@@ -11,7 +11,9 @@ SOURCES += main.cpp \
     filesystem.cpp \
     response.cpp \
     httpserver.cpp \
-    decoder.cpp
+    decoder.cpp \
+    clientsqueue.cpp \
+    worker.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -21,5 +23,7 @@ HEADERS += \
     filesystem.h \
     response.h \
     httpserver.h \
-    decoder.h
+    decoder.h \
+    clientsqueue.h \
+    worker.h
 

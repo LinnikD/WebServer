@@ -1,9 +1,5 @@
-#include <iostream>
-#include <string>
-#include <cmath>
-#include <cstring>
-
 #include "decoder.h"
+
 
 bool checkEntry(int num, int left, int right) {
     if ( num >= left && num <= right)
@@ -45,6 +41,7 @@ std::string urlDecoder(const std::string & url) {
     }
     return resultUrl;
 }
+
 std::string urlDeleteParams(const std::string & url) {
     std::string newUrl;
     size_t dots = url.find("..");

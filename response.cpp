@@ -7,8 +7,9 @@
 
 
 Response::Response() {
-    connection = "close";
+
 }
+
 void Response::setDate() {
     time_t rawtime;
     struct tm * timeinfo;
@@ -20,6 +21,7 @@ void Response::setDate() {
     std::string dateStr(buffer);
     date = dateStr;
 }
+
 void Response::setStatusCode(int status) {
     switch( status ) {
         case 200:
@@ -38,15 +40,19 @@ void Response::setStatusCode(int status) {
             statusCode = "405 METHOD NOT ALLOWED";
     }
 }
+
 void Response::setConnection(std::string connectionStatus) {
     connection = connectionStatus;
 }
+
 void Response::setContentLength(unsigned size) {
     contentLength = size;
 }
+
 void Response::setHttpVersion(std::string version) {
     httpVersion = version;
 }
+
 void Response::setContentType(std::string type) {
     if(type == ".jpg" || type == ".jpeg")
         contentType = "image/jpeg";
@@ -65,6 +71,7 @@ void Response::setContentType(std::string type) {
     if(type == ".swf")
         contentType = "application/x-shockwave-flash";
 }
+
 std::string Response::getResponse(){
     std::stringstream ss;
     ss << "HTTP/1.1 " << statusCode << "\r\n"
@@ -78,6 +85,7 @@ std::string Response::getResponse(){
     std::string responseStr = ss.str();
     return responseStr;
 }
+
 std::string Response::getStatusCode() {
     return statusCode;
 }
