@@ -3,7 +3,7 @@
 
 int main() {
 
-    HttpServer server(8080, 8);
+    HttpServer server(8086, 2);
     server.work();
     return 0;
 }

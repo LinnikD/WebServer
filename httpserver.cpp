@@ -1,5 +1,5 @@
 #include "httpserver.h"
-
+//sendfile()
 
 HttpServer::HttpServer(int port, int workersNum): workers(workersNum) {
     workersNumber = workersNum;
@@ -40,11 +40,16 @@ void HttpServer::work() {
         {
             if(acceptedFileDescriptor == -1) {
                 std::cout << "Accept connected client error" << std::endl;
+                return;
             }
         }
 
         int freeWorker = getFreeWorker();
-        workers[freeWorker].pushClient(acceptedFileDescriptor);
+        std::chrono::milliseconds dura( 1 );
+        //if(workersNumber == 1) {
+        //    std::this_thread::sleep_for(dura);
+        //}
+            workers[freeWorker].pushClient(acceptedFileDescriptor);
     }
 }
 
