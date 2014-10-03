@@ -1,7 +1,7 @@
 #include "httpserver.h"
-//sendfile()
 
-HttpServer::HttpServer(int port, int workersNum): workers(workersNum) {
+
+HttpServer::HttpServer(int port, int workersNum): workerThreadPull(workersNum) {
     workersNumber = workersNum;
 
     std::cout << "Init web server: ";
@@ -44,29 +44,25 @@ void HttpServer::work() {
             }
         }
 
-        int freeWorker = getFreeWorker();
-        std::chrono::milliseconds dura( 1 );
-        //if(workersNumber == 1) {
-        //    std::this_thread::sleep_for(dura);
-        //}
-            workers[freeWorker].pushClient(acceptedFileDescriptor);
+        int wt = chooseWorkerThread();
+            workerThreadPull[wt].setClient(acceptedFileDescriptor);
     }
 }
 
 void HttpServer::initWorkers() {
-    for (unsigned i = 0; i < workers.size(); i++) {
-        std::thread thr(&Worker::run, &workers[i], i);
+    for (unsigned i = 0; i < workerThreadPull.size(); i++) {
+        std::thread thr(&WorkerThread::start, &workerThreadPull[i]);
         thr.detach();
     }
 }
 
-int HttpServer::getFreeWorker() {
-    int buffWorker = 0;
-    for (unsigned i = 1; i < workers.size(); i++) {
-        if (workers[buffWorker].getClientsNumber() > workers[i].getClientsNumber()) {
-            buffWorker = i;
+int HttpServer::chooseWorkerThread() {
+    int worker = 0;
+    for (unsigned i = 1; i < workerThreadPull.size(); i++) {
+        if (workerThreadPull[worker].getClientsNumber() > workerThreadPull[i].getClientsNumber()) {
+            worker = i;
         }
     }
-    return buffWorker;
+    return worker;
 }
 

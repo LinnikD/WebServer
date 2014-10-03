@@ -1,28 +1,25 @@
-#include "worker.h"
+#include "workerthread.h"
 
 
-Worker::Worker() {
-    clientsNumber = 0;
-    notified = false;
-}
 
-unsigned long Worker::getClientsNumber() {
+
+unsigned long WorkerThread::getClientsNumber() {
     return clientsNumber;
 }
 
-void Worker::pushClient(int acceptedFileDescriptor) {
-    clients.push(acceptedFileDescriptor);
+void WorkerThread::setClient(int acceptedFileDescriptor) {
+    clients.setClient(acceptedFileDescriptor);
     clientsNumber = clients.getClientsNumber();
     wakeUp();
 }
 
-int Worker::popClient() {
-    int buff = clients.pop();
+int WorkerThread::getClient() {
+    int buff = clients.getClient();
     clientsNumber = clients.getClientsNumber();
     return buff;
 }
 
-void Worker::execute(int acceptedFileDescriptor) {
+void WorkerThread::work(int acceptedFileDescriptor) {
     
     char buffer[1024];
     
@@ -86,18 +83,38 @@ void Worker::execute(int acceptedFileDescriptor) {
     if (s == -1 && errno == EPIPE) {
 
     }
+
+
+
     if(method == "GET" && resp.getStatusCode() == "200 OK" ) {
         size_t fileSize = fs->getLength( url ) ;
+
+
+
+        // Замена send() на sendfile()
+        /*
         char *buf = fs->getFile( url );
         if(buf != NULL) {
             s = send(acceptedFileDescriptor, buf, fileSize, MSG_NOSIGNAL);
             if (s == -1 && errno == EPIPE) {
-
             }
         }
+        */
+
+
+        int fd = fs->openFileDescriptor( url );
+        ssize_t status = sendfile (acceptedFileDescriptor, fd, NULL, fileSize);
+        if(status == -1 && errno == EINVAL) {
+            std::cout << "/n Error in sendfile, sorry /n";
+        }
+        fs->colseFileDescriptor( fd );
+
         delete[] buf;
         buf = NULL;
     }
+
+
+
     
     delete[] buf;
     delete fs;
@@ -106,25 +123,20 @@ void Worker::execute(int acceptedFileDescriptor) {
     close(acceptedFileDescriptor);
 }
 
-void Worker::run(int workerIndex) {
-    {
-        std::unique_lock<std::recursive_mutex> locker(g_lockprint);
-        std::cout << "Thread " << workerIndex + 1 << " is running " << std::endl;
-    }
-    this->workerIndex = workerIndex;
+void WorkerThread::start() {
     while (1) {
         std::unique_lock<std::mutex> locker(_lock);
         while(!notified) {
             g_queuecheck.wait(locker);
         }
         while (getClientsNumber()) {
-            execute(popClient());
+            work(getClient());
         }
         notified = false;
     }
 }
 
-void Worker::wakeUp() {
+void WorkerThread::wakeUp() {
     notified = true;
     g_queuecheck.notify_all();
 }

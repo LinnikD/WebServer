@@ -1,9 +1,10 @@
 #include "httpserver.h"
 
+#include <signal.h>
 
 int main() {
-
-    HttpServer server(8086, 2);
+    signal(SIGPIPE, SIG_IGN);
+    HttpServer server(8081, 8);
     server.work();
     return 0;
 }

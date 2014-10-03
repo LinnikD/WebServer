@@ -1,5 +1,5 @@
-#ifndef WORKER_H
-#define WORKER_H
+#ifndef WORKERTHREAD_H
+#define WORKERTHREAD_H
 
 
 #include <thread>
@@ -12,32 +12,32 @@
 #include <thread>
 #include <condition_variable>
 
-#include "clientsqueue.h"
+#include "connectionpull.h"
 #include "request.h"
 #include "response.h"
 #include "filesystem.h"
 #include "decoder.h"
 
 
-static std::recursive_mutex g_lockprint;
-
-class Worker { 
+class WorkerThread {
 public:
     int testNumber;
     bool notified;
     std::condition_variable g_queuecheck;    
-    Worker();
-    void run(int t);
+    WorkerThread() {
+        clientsNumber = 0;
+        notified = false;
+    }
+    void start();
     void wakeUp();
     unsigned long getClientsNumber();
-    void pushClient(int acceptedFileDescriptor);
+    void setClient(int acceptedFileDescriptor);
 private:
     std::mutex  _lock;
-    ClientsQueue clients;
+    ConnectionPull clients;
     unsigned long clientsNumber;
-    int workerIndex;
-    void execute(int acceptedFileDescriptor);
-    int popClient();
+    void work(int acceptedFileDescriptor);
+    int getClient();
 };
 
-#endif // WORKER_H
+#endif // WORKERTHREAD_H

@@ -9,6 +9,10 @@
 #include <string>
 #include <cstring>
 #include <iostream>
+#include <sys/sendfile.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 
 class FileSystem {
@@ -22,6 +26,8 @@ public:
     unsigned getLength(const std::string & path);
     std::string getContentType(const std::string & path);
     char * getFile(const std::string & path);
+    int openFileDescriptor(const std::string & path);
+    void colseFileDescriptor(int fd);
 private:
     char DIRECTORY_ROOT[512];
     struct stat st;

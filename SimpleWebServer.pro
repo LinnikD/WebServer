@@ -12,8 +12,8 @@ SOURCES += main.cpp \
     response.cpp \
     httpserver.cpp \
     decoder.cpp \
-    clientsqueue.cpp \
-    worker.cpp
+    workerthread.cpp \
+    connectionpull.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -24,6 +24,6 @@ HEADERS += \
     response.h \
     httpserver.h \
     decoder.h \
-    clientsqueue.h \
-    worker.h
+    workerthread.h \
+    connectionpull.h
 

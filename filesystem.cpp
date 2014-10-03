@@ -2,7 +2,7 @@
 
 
 FileSystem::FileSystem() {
-    strcpy(DIRECTORY_ROOT, "/home/uzzz/");
+    strcpy(DIRECTORY_ROOT, "/home/uzzz/http-test-suite/");
 }
 
 FileSystem::FileSystem(const std::string & path) {
@@ -65,6 +65,18 @@ char * FileSystem::getFile(const std::string & path) {
     stream.close();
     delete[] absPath;
     return buf;
+}
+
+int FileSystem::openFileDescriptor(const std::string & path) {
+    char *absPath = new char[512];
+    strcpy(absPath, DIRECTORY_ROOT);
+    strcat(absPath, path.c_str());
+    int fd = open(absPath, O_RDONLY);
+    return fd;
+}
+
+void FileSystem::colseFileDescriptor(int fd) {
+    close(fd);
 }
 
 int FileSystem::initSt(const char *path) {

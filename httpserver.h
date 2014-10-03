@@ -15,7 +15,7 @@
 #include <vector>
 #include <mutex>
 
-#include "worker.h"
+#include "workerthread.h"
 #include "request.h"
 #include "filesystem.h"
 #include "response.h"
@@ -28,12 +28,12 @@ public:
     void work();
 private:
     int socketFileDescriptor;
-    std::vector<Worker> workers;
+    std::vector<WorkerThread> workerThreadPull;
     int workersNumber;
     std::mutex g_lockprint;
 
     void initWorkers();
-    int getFreeWorker();
+    int chooseWorkerThread();
 };
 
 #endif // HTTPSERVER_H
